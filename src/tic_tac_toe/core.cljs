@@ -1,6 +1,7 @@
 (ns tic-tac-toe.core
   (:require [reagent.core :as r] 
-            [cljs.pprint :refer [pprint]]))
+  	        [cljs.reader :as reader]
+            ))
 
 (enable-console-print!)
 
@@ -8,20 +9,54 @@
   { :winner :none
     :game-status :in-progress
     :current-player :cross
-    :board [[:none :none :none] 
-            [:none :none :none] 
-            [:none :none :none]]})
+    :board {}
+    })
+
+(defn solution [x y dx dy] 
+	(take 3 (iterate  #(vector (+ dx (get % 0)) (+ dy (get % 1)))  [x y] ))
+)
+
+(def solutions [
+	(solution 0 0 0 1)
+	(solution 1 0 0 1)
+	(solution 2 0 0 1)
+	(solution 0 0 1 0)
+	(solution 0 1 1 0)
+	(solution 0 2 1 0)
+	(solution 0 0 1 1)
+	(solution 0 2 1 -1)
+])
+
+(defn select-values [m ks] 
+         (reduce #(if-let [v (m %2)] (conj %1 v) %1) [] ks))
+
+(defn countWithFilter [predicate sequence]
+	(count (filter predicate sequence)
+	)
+)
+
+(defn did-player-win? [board player]
+	(some #(= 3 %) (map (fn [n] (countWithFilter #(= player %) n)) (map #(select-values board %) solutions)))
+)
+
 
 (defn prompt-player [] (
-  js/prompt "Make a move" "{:player :cross :i 0 :j 0}"))
+  js/prompt "Make a move" "[0 0]"))
 
-;(let [answer (prompt-player)] (print answer))
 
 (defn print-game-status [game-state] 
   (print "The game is" 
     (case (:game-status game-state)
       :in-progress "in progress"
       :completed "over")))
+
+(defn print-winner [game-state] 
+  (print 
+    (case (:winner game-state)
+      :none "It's a draw!"
+      :cross "Cross won the game!"
+      :circle "Circle won the game!"
+      )))
 
 (defn test-print-game-status [test-statement game-state new-game-status]
  (do 
@@ -31,13 +66,27 @@
 
 (defn run-game [game-state]
   (do
-    (print-game-status)
-))
-  (if (= :in-progress (:game-status game-state))
-    (do
-      (print-game-status game-state)
+    (print-game-status game-state)
+  	(if (= :completed (:game-status game-state))
+    	(print-winner game-state)
+    	(let [turn (prompt-player)
+    		  position (reader/read-string turn)
+    		  current-player (:current-player game-state)
+			  new-game-state (assoc-in game-state [:board position] current-player)
+			  current-player-won (did-player-win? (:board new-game-state) current-player)
+			  ]
+			  (do
+    		 	(print new-game-state)
+    		 	(print "current-player-won " current-player-won)
 
-)))
+    		 	(run-game (update-in new-game-state [:current-player] #(if (= :cross %) :circle :cross) ))
+    		  )
+    	)
+    )
+  	;	(p)
+))
+
+    
 
 (run-game default-game-state)
 
