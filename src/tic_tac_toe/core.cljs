@@ -1,5 +1,5 @@
 (ns tic-tac-toe.core
-  (:require (comment [reagent.core :as r] )
+  (:require [reagent.core :as r] 
             [cljs.reader :as reader]
             ))
 
@@ -78,9 +78,11 @@
   (let [new-game-state (assoc-in game-state [:game-status] new-game-status)] 
     (print-game-status new-game-state))))
 
+
 (defn run-game [game-state]
   (do
     (print-game-status game-state)
+    (print game-state)
     (if (= :completed (:game-status game-state))
       
       (print-winner game-state)
@@ -92,10 +94,10 @@
             current-player-won (did-player-win? new-board current-player)
             is-board-full (is-board-full? new-board)
             new-game-state (-> game-state
-              #(if current-player-won (assoc % :winner current-player) %)
-              #(if (or current-player-won is-board-full) (assoc % :game-status :completed) %)
-              #(update-in % [:current-player] #(if (= :cross %) :circle :cross) )
-              #(update-in % [:board] new-board)
+              (assoc :winner (if true current-player nil))
+              (assoc :game-status (if (or current-player-won is-board-full) :completed :in-progress))
+              (assoc :current-player (if (= current-player :cross) :circle :cross))
+              (assoc :board new-board)
             )
            ]
 
@@ -104,7 +106,24 @@
     )
 ))
 
-    
+;(def game-state default-game-state)
+
+;(-> game-state #(if true (assoc % :winner current-player) %))
+
+;(-> game-state (fn [c](if false (assoc c :winner current-player) c)))
+
+;(-> game-state (fn [c] (c)))
+
+;(-> game-state (fn [c] (assoc c :winner current-player)))
+
+;(-> game-state (assoc :winner current-player))
+
+;(-> game-state #((assoc % :winner current-player)))
+
+;(-> game-state (fn[g] (assoc g :winner current-player)))
+
+;(-> game-state (assoc :winner (if true current-player nil)))
+;(assoc-in game-state  [:winner] current-player)
 
 (run-game default-game-state)
 
