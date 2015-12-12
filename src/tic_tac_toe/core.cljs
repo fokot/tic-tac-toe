@@ -125,7 +125,52 @@
 ;(-> game-state (assoc :winner (if true current-player nil)))
 ;(assoc-in game-state  [:winner] current-player)
 
-(run-game default-game-state)
+; (run-game default-game-state)
+
+(def app-state
+  (r/atom 
+    {:test {[0 0] :cross [0 1] :circle}}
+    ))
+
+(defn cell-component [key] 
+  (let [value (get (:test @app-state) key)]
+    ^{:key key}[:div.max-size 
+      (if (nil? value)
+        {:on-click #(swap! app-state update-in [:test] assoc key :cross)})
+      (case value
+        nil ""
+        :cross "\u274C"
+        :circle "\u2B55"
+      )]))
+
+(defn board-component [] 
+  [:table
+    [:tbody
+    (for [x [0 1 2]]
+      [:tr
+        (for [y [0 1 2]]
+          [:td
+            [cell-component [x y]]
+          ]
+        )
+      ]
+    )
+    ]])
+
+(defn start-new-game-component [] 
+  [:button {:on-click #(swap! app-state assoc-in [:test] {})}])
+
+(defn game-component [] [:div
+  [board-component]
+  [start-new-game-component]])
+
+;; Render the root component
+(defn start []
+  (r/render-component 
+   [game-component]
+   (.getElementById js/document "app")))
+
+(start)
 
 ;(test-print-game-status "game is in progress" default-game-state :in-progress)
 ;(test-print-game-status "game is completed" default-game-state :completed)

@@ -1,2 +1,21 @@
-/* some style */
+td, tr, th {
+    border: 1px solid black;
+}
+table {
+    border-collapse: collapse;
+}
+td, th {
+    min-width: 50px;
+    height: 21px;
+}
+
+.max-size {
+	height: 100%;
+	width: 100%;
+}
+
+span {
+    width: 100%;
+    display: block;
+}
 
