@@ -5,13 +5,17 @@
 
 (enable-console-print!)
 
-; game state
-(defonce default-game-state 
-  { :winner nil
+(def new-game-state
+  { 
+    :winner nil
     :game-status :in-progress
     :current-player :cross
     :board {}
     })
+
+; game state
+(defonce game-state
+  (r/atom new-game-state))
 
 ; vector of keys of all possible solutions
 ; 3x row
@@ -46,18 +50,6 @@
   (= 9 (count board))
 )
 
-(def board
-  {
-    [0 0] :cross [0 1] :circle [0 2] :cross
-    [1 0] :cross               [1 2] :circle
-    [2 0] :cross [2 1] :circle
-  }
-)
-
-(defn prompt-player [] (
-  js/prompt "Make a move" "[0 0]"))
-
-
 (defn print-game-status [game-state] 
   (print "The game is" 
     (case (:game-status game-state)
@@ -78,70 +70,75 @@
   (let [new-game-state (assoc-in game-state [:game-status] new-game-status)] 
     (print-game-status new-game-state))))
 
+(def all-board-postions 
+  (for [x [0 1 2]
+        y [0 1 2]]
+       [x y]))
 
-(defn run-game [game-state]
+(defn circle-move [board]
+  (rand-nth (remove (set (keys board)) all-board-postions)))
+
+(defn run-game [cross-turn]
   (do
-    (print-game-status game-state)
-    (print game-state)
-    (if (= :completed (:game-status game-state))
+    (println "som tu")
+    (print-game-status @game-state)
+    (println @game-state)
+    (if (= :completed (:game-status @game-state))
       
-      (print-winner game-state)
+      (print-winner @game-state)
 
-      (let [turn (prompt-player)
-            position (reader/read-string turn)
-            current-player (:current-player game-state)
-            new-board (assoc-in (:board game-state) [position] current-player)
-            current-player-won (did-player-win? new-board current-player)
-            is-board-full (is-board-full? new-board)
-            new-game-state (-> game-state
-              (assoc :winner (if true current-player nil))
-              (assoc :game-status (if (or current-player-won is-board-full) :completed :in-progress))
-              (assoc :current-player (if (= current-player :cross) :circle :cross))
-              (assoc :board new-board)
-            )
+      (let [new-board (assoc (:board @game-state) cross-turn :cross)
            ]
+           (if (did-player-win? new-board :cross)
+            (do 
+              (println "cross won")
+              (swap! game-state #(-> % (assoc :board new-board)
+                                         (assoc :game-status :completed)
 
-          (run-game new-game-state)
+                  ))
+
+              )
+            )
+            (if (is-board-full? new-board)
+              (do 
+                (println "board is full")
+                (swap! game-state #(-> % (assoc :board new-board)
+                                         (assoc :game-status :completed)
+
+                  ))
+              )
+              (let [new-new-board (assoc new-board (circle-move new-board) :circle)
+                    circle-won (did-player-win? new-new-board :circle)
+                   ]
+                   (do 
+                    (swap! game-state assoc :board new-new-board))
+                    (if circle-won 
+                      (println "cross won")
+                      (swap! game-state #(-> % (assoc :board new-board)
+                                         (assoc :game-status :completed)
+
+                      ))
+                      (if (is-board-full? new-new-board)
+                        (println "board is full"))
+                    )
+                   )
+            )
       )
     )
 ))
 
-;(def game-state default-game-state)
-
-;(-> game-state #(if true (assoc % :winner current-player) %))
-
-;(-> game-state (fn [c](if false (assoc c :winner current-player) c)))
-
-;(-> game-state (fn [c] (c)))
-
-;(-> game-state (fn [c] (assoc c :winner current-player)))
-
-;(-> game-state (assoc :winner current-player))
-
-;(-> game-state #((assoc % :winner current-player)))
-
-;(-> game-state (fn[g] (assoc g :winner current-player)))
-
-;(-> game-state (assoc :winner (if true current-player nil)))
-;(assoc-in game-state  [:winner] current-player)
-
-; (run-game default-game-state)
-
-(def app-state
-  (r/atom 
-    {:test {[0 0] :cross [0 1] :circle}}
-    ))
-
 (defn cell-component [key] 
-  (let [value (get (:test @app-state) key)]
+  (let [value (get (:board @game-state) key)]
     ^{:key key}[:div.max-size 
       (if (nil? value)
-        {:on-click #(swap! app-state update-in [:test] assoc key :cross)})
+        {:on-click #(run-game key)})
       (case value
         nil ""
         :cross "\u274C"
         :circle "\u2B55"
       )]))
+
+
 
 (defn board-component [] 
   [:table
@@ -158,7 +155,7 @@
     ]])
 
 (defn start-new-game-component [] 
-  [:button {:on-click #(swap! app-state assoc-in [:test] {})}])
+  [:button {:on-click #(reset! game-state new-game-state)}])
 
 (defn game-component [] [:div
   [board-component]
@@ -171,19 +168,3 @@
    (.getElementById js/document "app")))
 
 (start)
-
-;(test-print-game-status "game is in progress" default-game-state :in-progress)
-;(test-print-game-status "game is completed" default-game-state :completed)
-
-
-
-
-; (run-game [game-state]
-;     - print game status
-;     - if game completed -> print winner
-;     - if game status in progress ->    
-;       - ask for turn
-;       - update board
-;       - calculate new game-status
-;       - toggle player
-;       - run-game new-game-status
