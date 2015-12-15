@@ -35,7 +35,9 @@
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/tic_tac_toe.js"
                            :main tic-tac-toe.core
-                           :optimizations :advanced
+                           ;; for testing
+                           ;:optimizations :advanced
+                           :optimizations :none
                            :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
