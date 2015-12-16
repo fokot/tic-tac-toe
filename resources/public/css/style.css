@@ -20,7 +20,6 @@ http://learnlayout.com/box-sizing.html
 	width: 100px;
 	height: 100px;
 	display: inline-block;
-	/*outline: 2px solid red;*/
 	vertical-align: middle;
 }
 
@@ -48,10 +47,16 @@ button {
 	font-size: 15px;
 }
 
+h1 {
+	font-size: 30px;
+}
+
 #game {
 	margin: 0 auto;
 	width: 300px;
 	text-align: center;
+	/* otherwise inline-blocks div (board cells) will have speces in between */
+	font-size: 0px;
 }
 
 .announcement {
@@ -64,32 +69,24 @@ button {
 
 @keyframes grow {
   from {
-    width: 10%;
-    height: 10%;
-    vertical-align: 0 auto;
-  }
-  to {
-    width: 100%;
-    height: 100%;
-    vertical-align: 0 auto;
-  }
-}
-
-@keyframes grow2 {
-  from {
-  	transform: scale(0.2);
+  	transform: scale(0.5);
+  	transform-origin: 20% 20%;
   }
   to {
   	transform: scale(1);
+  	transform-origin: 20% 20%;
   }
 }
-.a {
-  animation: grow2 500ms 0s infinite linear alternate;
-  /*transition: all 2s ease-in-out;
-  transform-origin: top right;*/
+
+svg {
+  animation: grow 0.5s 0s 1 linear normal;
 }
 
-
+/* for debuging
+* {
+	outline: 1px solid red;
+}
+*/
 
 
 

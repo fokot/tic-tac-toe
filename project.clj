@@ -7,8 +7,8 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.170"]
                  [org.clojure/core.async "0.2.374"]
-                 [reagent "0.5.0"]
-                 [cljs-ajax "0.5.1"]]
+                 [reagent "0.5.1"]
+                ]
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.5.0-1"]]
@@ -27,7 +27,10 @@
                            :asset-path "js/compiled/out"
                            :output-to "resources/public/js/compiled/tic_tac_toe.js"
                            :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true}}
+                           :source-map-timestamp false
+                           :pretty-print true
+                           :optimizations :none
+                           }}
                ;; This next build is an compressed minified build for
                ;; production. You can build this with:
                ;; lein cljsbuild once min
@@ -36,8 +39,7 @@
                 :compiler {:output-to "resources/public/js/compiled/tic_tac_toe.js"
                            :main tic-tac-toe.core
                            ;; for testing
-                           ;:optimizations :advanced
-                           :optimizations :none
+                           :optimizations :advanced
                            :pretty-print false}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
