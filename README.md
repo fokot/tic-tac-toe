@@ -1,12 +1,11 @@
 <a href='http://www.recurse.com' title='Made with love at the Recurse Center'><img src='https://cloud.githubusercontent.com/assets/2883345/11322972/9e553260-910b-11e5-8de9-a5bf00c352ef.png' height='59px'/></a>
 
-# tic-tac-toe
-
-FIXME: Write a one-line description of your library/project.
+# Ultimate tic-tac-toe
+This is my first Clojurescritp program.[Runing game can be found here.](http://fokot.github.io/ultimate-tic-tac-toe/index.html)
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+I wrote this game to learn Clojure, Clojurescript and Reagent.
 
 ## Setup
 
@@ -32,10 +31,4 @@ To create a production build run:
     lein cljsbuild once min
 
 And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
-
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+get live reloading, nor a REPL.
