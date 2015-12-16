@@ -1,24 +1,99 @@
-td, tr, th {
-    border: 1px solid black;
-}
-table {
-    border-collapse: collapse;
-}
-td, th {
-    min-width: 50px;
-    height: 21px;
-}
-
-.max-size {
-	height: 100%;
-	width: 100%;
-}
-
-span {
-    width: 100%;
-    display: block;
-}
-
 .solution {
-	background-color: red
+	background-color: green;
 }
+
+/*
+border and margins are not resing width/height
+http://learnlayout.com/box-sizing.html
+*/
+.cell {
+  	box-sizing: border-box;
+}
+
+
+#board {
+	width: 300px;
+	height: 300px;
+}
+
+.cell {
+	width: 100px;
+	height: 100px;
+	display: inline-block;
+	/*outline: 2px solid red;*/
+	vertical-align: middle;
+}
+
+.cell:nth-child(3n+0),
+.cell:nth-child(3n+2) {
+    border-left: 4px solid black;
+}
+
+.cell:nth-child(-n+3),
+.cell:nth-child(4),
+.cell:nth-child(5),
+.cell:nth-child(6) {
+    border-bottom: 4px solid black;
+}
+
+button {
+	border-width: 2px;
+	border-color: #85C1E9;
+	border-style: solid;
+	border-radius: 15px;
+	background-color: #3498DB;
+	color: white;
+	padding: 10px 100px;
+	margin-top: 30px;
+	font-size: 15px;
+}
+
+#game {
+	margin: 0 auto;
+	width: 300px;
+	text-align: center;
+}
+
+.announcement {
+    position: relative;
+  	top: -60%;
+    background-color: #3498DB;
+	font-size: 40px;
+	color: white;
+}
+
+@keyframes grow {
+  from {
+    width: 10%;
+    height: 10%;
+    vertical-align: 0 auto;
+  }
+  to {
+    width: 100%;
+    height: 100%;
+    vertical-align: 0 auto;
+  }
+}
+
+@keyframes grow2 {
+  from {
+  	transform: scale(0.2);
+  }
+  to {
+  	transform: scale(1);
+  }
+}
+.a {
+  animation: grow2 500ms 0s infinite linear alternate;
+  /*transition: all 2s ease-in-out;
+  transform-origin: top right;*/
+}
+
+
+
+
+
+
+
+
+
