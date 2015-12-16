@@ -1,7 +1,7 @@
 <a href='http://www.recurse.com' title='Made with love at the Recurse Center'><img src='https://cloud.githubusercontent.com/assets/2883345/11322972/9e553260-910b-11e5-8de9-a5bf00c352ef.png' height='59px'/></a>
 
 # Ultimate tic-tac-toe
-This is my first Clojurescritp program.[Runing game can be found here.](http://fokot.github.io/ultimate-tic-tac-toe/index.html)
+This is my first Clojurescritp program. [Runing game can be found here.](http://fokot.github.io/ultimate-tic-tac-toe/index.html)
 
 ## Overview
 
