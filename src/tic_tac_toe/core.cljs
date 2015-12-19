@@ -7,7 +7,6 @@
   { 
     :winner nil
     :game-status :in-progress
-    :current-player :cross
     :board {}
     :solutions nil
     })
@@ -41,24 +40,31 @@
 ; checks if player won the game
 ; = there is a solution (list positions on the board) for which all 3 values are player's
 ; #{player} - creates set with player inside. Sets are alo functions returning the element if it's inside
-(defn did-player-win? [board player]
+(defn did-player-win? [player board]
   (seq (apply concat (filter #(= 3 (count (filter #{player} (select-values board %) ))) solutions)))
 )
 
-(def all-board-postions 
+(def all-board-positions 
   (for [x [0 1 2]
         y [0 1 2]]
        [x y]))
 
 (defn computer-move [board]
-  (rand-nth (remove (set (keys board)) all-board-postions)))
+  (let [free-cells (remove (set (keys board)) all-board-positions)]
+    (or
+      ; if computer can win by one move, do it
+      (first (filter #(did-player-win? :circle (assoc board % :circle)) free-cells))
+      ; if user can win by one move, prevet it
+      (first (filter #(did-player-win? :cross (assoc board % :cross)) free-cells))
+      ; otherwise random move
+      (rand-nth free-cells))))
 
 (defn do-move 
   "Updates board with player move and checks if player did win.
    Returns game-state with new board and game-status set."
   [game-state position player]
     (let [new-game-state (assoc-in game-state [:board position] player)
-          player-won (did-player-win? (:board new-game-state) player)]
+          player-won (did-player-win? player (:board new-game-state))]
           (if player-won
             (-> new-game-state
                 (assoc :game-status :completed)
